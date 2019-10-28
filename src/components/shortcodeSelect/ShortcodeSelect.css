@@ -1,0 +1,29 @@
+.ShortcodeSelect {
+    margin: 5px 20px;
+    padding: 0.5rem;
+    border: 1px solid #cccccc;
+    display: block;
+}
+
+.ShortcodeSelect .Button {
+    background: ghostwhite;
+    font-size: 1rem;
+    padding: 5px 10px;
+    margin: 5px;
+    width: 100%;
+}
+
+@media screen and (min-width: 798px) {
+    .ShortcodeSelect {
+        margin: 20px 40px;
+        padding: 2rem;
+        display: flex;
+        flex-flow: row;
+        flex-basis: 100%;
+        width: auto;
+    }
+
+    .ShortcodeSelect .Button {
+        padding: 10px 20px;
+    }
+}

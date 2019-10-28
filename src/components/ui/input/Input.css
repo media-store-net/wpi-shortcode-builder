@@ -1,0 +1,14 @@
+.Input {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+.Label {
+    display: block;
+}
+
+.InputElement {
+    display: inline-block;
+    width: 80%;
+}
