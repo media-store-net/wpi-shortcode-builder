@@ -12,6 +12,7 @@ export default class App extends Component<{}, {}> {
 
     state = {
         withInput: false,
+        input: '',
         output: '',
         formInputs: {
             searchFilterOptions: {
@@ -26,13 +27,7 @@ export default class App extends Component<{}, {}> {
 
     };
 
-    constructor(props: any) {
-        super(props);
-
-        this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    }
-
-    searchfilterHandler = () => {
+    searchfilterHandler() {
         this.setState({withInput: true});
 
         const string: string = [
@@ -50,47 +45,67 @@ export default class App extends Component<{}, {}> {
                             elementConfig={this.state.formInputs.searchFilterOptions.elementConfig}
                             disabled={true} value={string}
                 //@ts-ignore
-                            changed={(event: any) => this.inputChangeHandler(event, searchFilterOptions)}/>)
+                            changed={(event: any) => this.inputChangeHandler(event, searchFilterOptions).bind(this)}/>)
         });
     };
 
-    searchResultHandler = () => {
+    searchResultHandler() {
         this.setState({withInput: false});
         this.setState({output: '[search_filter_result]'})
     };
 
-    immoQueryHandler = () => {
+    immoQueryHandler() {
         this.setState({withInput: true});
         this.setState({output: '[immobilien]'})
     };
 
-    inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>, stateData: Object) => {
+    inputChangeHandler (event: ChangeEvent<HTMLInputElement>, stateKey: string) {
+
+        event.preventDefault();
         event.persist();
+        const state = {"input": event.target.value};
 
-        const updatedFormInputs: Object = {...this.state.formInputs};
+        this.setState(state);
 
-        console.log(event.target.value);
-        // @ts-ignore
-        updatedFormInputs[stateData].value = event.target.value;
+        /*
 
-        this.setState({formInputs: updatedFormInputs});
+                const updatedFormInputs: Object = {...this.state.formInputs};
+
+                console.log(event.target.value);
+                updatedFormInputs[stateKey]["value"] = event.target.value;
+
+                this.setState({formInputs: updatedFormInputs});
+        */
+        console.log(this.state.input);
+
     };
 
+
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
+        // @ts-ignore
         return (
             <div className="App">
                 <Header/>
                 <ShortcodeSelect>
-                    <Button clicked={this.searchfilterHandler}>Suchfilter</Button>
-                    <Button clicked={this.searchResultHandler}>Suchergebnisse</Button>
-                    <Button clicked={this.immoQueryHandler}>Immobilien-Query</Button>
+                    <Button clicked={this.searchfilterHandler.bind(this)}>Suchfilter</Button>
+                    <Button clicked={this.searchResultHandler.bind(this)}>Suchergebnisse</Button>
+                    <Button clicked={this.immoQueryHandler.bind(this)}>Immobilien-Query</Button>
                 </ShortcodeSelect>
+                <Input label="Beschriftung Button" elementType="input" disabled={false}
+                       elementConfig={this.state.formInputs.searchFilterOptions.elementConfig}
+                       changed={(event: any) => {
+                           event.preventDefault();
+                           event.persist();
+                           console.log(event.target.value)
+                       }
+                       }
+                       value={this.state.input}/>
                 {this.state.withInput ? <InputArea>
-                    <Input label="Beschriftung Button" elementType="input" disabled={false}
+                    <Input key={this.state.input} label="Beschriftung Button" elementType="input" disabled={false}
                            elementConfig={this.state.formInputs.searchFilterOptions.elementConfig}
-                           value={this.state.formInputs.searchFilterOptions.value}
-                        //@ts-ignore
-                           changed={(event: ChangeEvent<HTMLInputElement>) => this.inputChangeHandler(event, "searchFilterOptions")}/>
+                           value={this.state.input}
+                        // @ts-ignore
+                           changed={(event: ChangeEvent<HTMLInputElement>) => this.setState({'input': event.target.value})}/>
                 </InputArea> : ''}
                 <OutputArea>{this.state.output}</OutputArea>
             </div>

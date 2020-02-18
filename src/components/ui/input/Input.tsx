@@ -1,72 +1,61 @@
-import React, {Component, ReactElement} from "react";
-import "./Input.css";
+import React, {useEffect, useState} from 'react';
 
-type props = {
-    label: string,
-    elementType: string,
-    elementConfig: any,
-    value: string,
-    disabled: boolean,
-    changed: React.ChangeEvent<HTMLInputElement>
-}
+// @ts-ignore
+import classes from './Input.css';
 
-class Input extends Component<props, {}> {
+const input = ( props:any ) => {
+    let inputElement = null;
+    const inputClasses = [classes.InputElement];
 
-    inputElement: ReactElement | null = null;
-
-    constructor(props: any) {
-        super(props);
-
-        switch (this.props.elementType) {
-            case ('input'):
-                this.inputElement = <input
-                    className="InputElement"
-                    {...this.props.elementConfig}
-                    value={this.props.value}
-                    disabled={this.props.disabled}
-                    onChange={this.props.changed}/>;
-                break;
-            case ('textarea'):
-                this.inputElement = <textarea
-                    className=".InputElement"
-                    {...this.props.elementConfig}
-                    value={this.props.value}
-                    disabled={this.props.disabled}
-                    onChange={this.props.changed}/>;
-                break;
-            case ('select'):
-                this.inputElement = (
-                    <select
-                        className="InputElement"
-                        //onChange={this.props.changed}
-                        disabled={this.props.disabled}>
-                        {this.props.elementConfig.options.map((option: any) => (
-                            <option key={option.value} value={option.value}>
-                                {option.displayValue}
-                            </option>
-                        ))}
-                    </select>
-                );
-                break;
-            default:
-                this.inputElement = <input
-                    className="InputElement"
-                    {...this.props.elementConfig}
-                    value={this.props.value}
-                    disabled={this.props.disabled}
-                    onChange={this.props.changed}/>;
-        }
+    if (props.invalid && props.shouldValidate && props.touched) {
+        inputClasses.push(classes.Invalid);
     }
 
-    render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
-        const label = this.props.label !== '' ? <label>{this.props.label}</label> : '';
-        return (
-            <div className="Input">
-                <label className="Label">{this.props.label}</label>
-                {this.inputElement}
-            </div>
-        );
+    switch ( props.elementType ) {
+        case ( 'input' ):
+            inputElement = <input
+                className={inputClasses.join(' ')}
+                {...props.elementConfig}
+                value={props.value}
+                onChange={props.changed} />;
+            break;
+        case ( 'textarea' ):
+            inputElement = <textarea
+                className={inputClasses.join(' ')}
+                {...props.elementConfig}
+                value={props.value}
+                onChange={props.changed} />;
+            break;
+        case ( 'select' ):
+            inputElement = (
+                <select
+                    className={inputClasses.join(' ')}
+                    value={props.value}
+                    onChange={props.changed}>
+                    {props.elementConfig.options.map((option:any) => (
+                        <option key={option.value} value={option.value}>
+                            {option.displayValue}
+                        </option>
+                    ))}
+                </select>
+            );
+            break;
+        default:
+            inputElement = <input
+                className={inputClasses.join(' ')}
+                {...props.elementConfig}
+                value={props.value}
+                onChange={props.changed} />;
     }
-}
 
-export default Input;
+    return (
+        <div className={classes.Input} key={props.value}>
+            <label className={classes.Label}>{props.label}</label>
+            {inputElement}
+        </div>
+    );
+
+
+};
+
+export default input;
